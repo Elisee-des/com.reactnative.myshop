@@ -11,7 +11,7 @@ export interface Product {
 }
 
 interface CreateOrder {
-    email: string;
+    customer_email: string;
     products: Array<{ product_id: number; quantity: number }>;
 }
 
@@ -44,6 +44,26 @@ export async function fetchProductDetail(idProduct: number): Promise<Product | n
         return await response.json();
     } catch (error) {
         console.error('Error fetching product details:', error);
+        return null;
+    }
+}
+
+export async function createOrder(orderData: CreateOrder): Promise<Order | null> {
+    try {
+        const response = await fetch(`${API_URL}/orders`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch order details.');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching order details:', error);
         return null;
     }
 }

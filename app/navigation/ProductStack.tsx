@@ -60,7 +60,11 @@ const ProductStackNav = () => {
         name="CartModal"
         component={CartModal}
         options={{
-          headerShown: false,
+          headerTitle: () => (
+            <Text style={{ color: "#fff", fontSize: 27, fontWeight: "bold" }}>
+              Panier
+            </Text>
+          ),
           presentation: "modal",
         }}
       />
