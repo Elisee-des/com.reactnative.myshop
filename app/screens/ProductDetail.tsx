@@ -11,7 +11,6 @@ const ProductDetail = ({ route }: ProductsDetailPageProps) => {
     const fetchProduct = async () => {
       try {
         const productData = await fetchProductDetail(id);
-        console.log("🚀 ~ fetchProduct ~ productData:", productData);
         setproduct(productData);
       } catch (error) {
         console.log("error", error);
