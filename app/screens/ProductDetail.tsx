@@ -1,11 +1,36 @@
-import { View, Text, SafeAreaView, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { ProductsDetailPageProps } from "@/navigation/ProductStack";
 import { Product, fetchProductDetail } from "../api/api";
+import useCartStore from "../state/cartStore";
+import { Ionicons } from "@expo/vector-icons";
 
 const ProductDetail = ({ route }: ProductsDetailPageProps) => {
   const { id } = route.params;
   const [product, setproduct] = useState<Product>(null);
+  const { products, addProduct, reduceProduct } = useCartStore((state) => ({
+    products: state.products,
+    addProduct: state.addProduct,
+    reduceProduct: state.reduceProduct,
+  }));
+  const [count, setCount] = useState<number>(0);
+
+  const updateProductQuantity = () => {
+    const result = products.filter((p) => p.id === id);
+
+    if (result.length > 0) {
+      setCount(result[0].quantity);
+    } else {
+      setCount(0);
+    }
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -18,6 +43,10 @@ const ProductDetail = ({ route }: ProductsDetailPageProps) => {
     };
     fetchProduct();
   }, []);
+
+  useEffect(() => {
+    updateProductQuantity();
+  }, [products]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -35,6 +64,22 @@ const ProductDetail = ({ route }: ProductsDetailPageProps) => {
             {product?.product_description}
           </Text>
           <Text style={styles.productPrice}>${product?.product_price}</Text>
+
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => reduceProduct(product)}
+            >
+              <Ionicons name="remove" size={24} color={"#FF385C"} />
+            </TouchableOpacity>
+            <Text style={styles.quantity}>{count}</Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => addProduct(product)}
+            >
+              <Ionicons name="add" size={24} color={"#FF385C"} />
+            </TouchableOpacity>
+          </View>
         </>
       )}
     </SafeAreaView>
@@ -84,7 +129,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     flex: 1,
-    borderColor: "#1FE687",
+    borderColor: "#FF385C",
     borderWidth: 2,
   },
   quantity: {

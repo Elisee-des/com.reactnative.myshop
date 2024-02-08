@@ -40,7 +40,7 @@ const useCartStore = create<CartState>((set) => ({
                     return { ...p, quantity: p.quantity - 1 }
                 }
                 return p;
-            })
+            }).filter((p) => p.quantity > 0)
         }
     }),
     clearCart: () =>
